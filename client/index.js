@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
     fetch('http://localhost:5000/getAll')
         .then(response => response.json())
@@ -10,7 +9,13 @@ document.querySelector('table tbody').addEventListener
         if (event.target.className === "delete-row-btn") {
             deleteRowById(event.target.dataset.id);
         }
+        if (event.target.className === "edit-row-btn") {
+            handleEditRow(event.target.dataset.id);
+        }
     });
+
+const updateBtn = document.querySelector('#update-row-btn');
+
 function deleteRowById(id) {
     console.log(id);
     fetch('http://localhost:5000/delete/' + id, {
@@ -24,6 +29,35 @@ function deleteRowById(id) {
         });
 }
 
+function handleEditRow(id) {
+    const updateSection = document.querySelector('#update-row');
+    updateSection.hidden = false;
+    document.querySelector('#update-task-input').dataset.id = id;
+}
+
+updateBtn.onclick = function () {
+    const updateTaskInput = document.querySelector('#update-task-input');
+
+    console.log(updateTaskInput);
+
+    fetch('http://localhost:5000/update', {
+        method: 'PATCH',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: updateTaskInput.dataset.id,
+            task: updateTaskInput.value
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        })
+
+}
 
 const addBtn = document.querySelector('#add-task-btn');
 
