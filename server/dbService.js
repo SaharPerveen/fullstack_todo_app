@@ -100,6 +100,23 @@ class DbService {
             return false;
         }
     }
+
+    async searchByTask(task) {
+        try {
+            const response = await new Promise((resolve, reject) => {
+                const query = "SELECT * FROM tasks WHERE task = ?;";
+
+                connection.query(query, [task], (err, results) => {
+                    if (err) reject(new Error(err.message));
+                    resolve(results);
+                })
+            });
+            return response;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
 
 module.exports = DbService;
